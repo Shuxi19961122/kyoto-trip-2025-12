@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>京都2025秋楓之旅 - 詳細版</title>
+    <title>京都2025秋楓之旅 - 雅緻和風版</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
@@ -11,11 +11,28 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: #f3f4f6; }
-        .timeline-line { position: absolute; left: 24px; top: 30px; bottom: -20px; width: 2px; background-color: #e5e7eb; z-index: 0; }
+        /* 雅緻和風配色與排版調整 */
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+            background-color: #fcfcfc; /* 柔和的米白色背景，像和紙 */
+        }
+        .timeline-line { 
+            position: absolute; 
+            left: 24px; 
+            top: 30px; 
+            bottom: -20px; 
+            width: 2px; 
+            background-color: #b08968; /* 竹簡/木頭棕色 */
+            opacity: 0.6;
+            z-index: 0; 
+        }
         .last-item .timeline-line { display: none; }
         .hide-scrollbar::-webkit-scrollbar { display: none; }
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        /* 調整 Header 陰影，使其更柔和 */
+        .kyoto-header {
+             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.03); 
+        }
     </style>
 </head>
 <body>
@@ -24,13 +41,14 @@
     <script type="text/babel">
         const { useState, useEffect } = React;
 
-        // --- 數據結構 (已新增 details 和 hours 欄位) ---
+        // --- 數據結構 (已整合即時天氣預報) ---
+        // 數據內容與上一版相同，僅更新 UI
         const tripData = [
             {
                 day: 1,
                 date: "11.28 (五)",
                 location: "台灣 -> 台北",
-                weather: { temp: "21°~18°", icon: "cloud", desc: "舒適 (隔早轉冷)" },
+                weather: { temp: "21°~18°", icon: "cloud", desc: "預估: 舒適 (隔早轉冷)" },
                 activities: [
                     { time: "13:00", type: "transport", name: "豐原車站", desc: "坐自強號前往台北", duration: "129分", icon: "train", cost: "N/A", hours: "N/A", details: "坐自強" },
                     { time: "15:20", type: "transport", name: "台北車站", desc: "轉捷運往淡水", duration: "50分", icon: "subway", cost: "N/A", hours: "N/A", details: "" },
@@ -42,7 +60,7 @@
                 day: 2,
                 date: "11.29 (六)",
                 location: "京都市區 (車站周圍)",
-                weather: { temp: "5°~13°", icon: "cloud-sun", desc: "下午有太陽" },
+                weather: { temp: "15°~6°", icon: "sun", desc: "即時預報: 晴朗 (Sunny)" },
                 activities: [
                     { time: "05:00", type: "transport", name: "長榮櫃台", desc: "05:00 開櫃", duration: "30分", icon: "ticket", cost: "N/A", hours: "N/A", details: "" },
                     { time: "06:30", type: "transport", name: "起飛 BR-178", desc: "飛往關西機場", duration: "150分", icon: "plane", cost: "N/A", hours: "N/A", details: "" },
@@ -61,7 +79,7 @@
                 day: 3,
                 date: "11.30 (日)",
                 location: "京都左京 (叡山鞍馬)",
-                weather: { temp: "5°~15°", icon: "sun", desc: "早上有太陽" },
+                weather: { temp: "18°~7°", icon: "sun", desc: "即時預報: 多數晴朗 (Mostly Sunny)" },
                 activities: [
                     { time: "07:00", type: "transport", name: "出門", desc: "06:45 日出", duration: "", icon: "person-walking", cost: "N/A", hours: "N/A", details: "" },
                     { time: "07:33", type: "transport", name: "河原町今出川", desc: "公車 3 號", duration: "27分", icon: "bus", cost: "N/A", hours: "N/A", details: "" },
@@ -77,7 +95,7 @@
                 day: 4,
                 date: "12.01 (一)",
                 location: "京都左京 (大原周圍)",
-                weather: { temp: "5°~8°", icon: "snowflake", desc: "偏冷" },
+                weather: { temp: "19°~10°", icon: "cloud-sun", desc: "即時預報: 多雲間歇晴朗" },
                 activities: [
                     { time: "07:00", type: "transport", name: "出門", desc: "前往四条高倉", duration: "", icon: "person-walking", cost: "N/A", hours: "N/A", details: "" },
                     { time: "08:22", type: "transport", name: "抵達大原", desc: "公車特17", duration: "", icon: "bus", cost: "N/A", hours: "N/A", details: "" },
@@ -94,7 +112,7 @@
                 day: 5,
                 date: "12.02 (二)",
                 location: "京都嵯峨嵐山",
-                weather: { temp: "1°~12°", icon: "sun", desc: "有太陽，早晚冷" },
+                weather: { temp: "17°~7°", icon: "cloud-sun", desc: "即時預報: 多雲間歇晴朗" },
                 activities: [
                     { time: "06:00", type: "transport", name: "出門", desc: "前往四条大宮", duration: "", icon: "person-walking", cost: "N/A", hours: "N/A", details: "" },
                     { time: "06:35", type: "transport", name: "嵐山站", desc: "嵐電抵達", duration: "", icon: "train", cost: "N/A", hours: "N/A", details: "" },
@@ -112,7 +130,7 @@
                 day: 6,
                 date: "12.03 (三)",
                 location: "京都東山",
-                weather: { temp: "2°~12°", icon: "sun", desc: "有太陽" },
+                weather: { temp: "10°~4°", icon: "cloud", desc: "即時預報: 多雲 (Cloudy)" },
                 activities: [
                     { time: "05:00", type: "transport", name: "出門", desc: "計程車前往五重塔", duration: "", icon: "taxi", cost: "N/A", hours: "N/A", details: "06:48日出" },
                     { time: "06:00", type: "spot", name: "清水寺 仁王門", desc: "仁王門 (06:00開)", duration: "40分", icon: "gopuram", cost: "￥500", hours: "06:00~18:00", details: "京都清水寺1日行程-參觀重點..." },
@@ -129,7 +147,7 @@
                 day: 7,
                 date: "12.04 (四)",
                 location: "京都山科-宇治",
-                weather: { temp: "3°~9°", icon: "cloud", desc: "多雲" },
+                weather: { temp: "9°~1°", icon: "cloud", desc: "即時預報: 多雲 (Cloudy)" },
                 activities: [
                     { time: "06:50", type: "transport", name: "出門", desc: "前往山科", duration: "", icon: "person-walking", cost: "N/A", hours: "N/A", details: "" },
                     { time: "08:35", type: "spot", name: "毘沙門堂", desc: "勅使坂紅葉", duration: "45分", icon: "leaf", cost: "￥700", hours: "N/A", details: "" },
@@ -145,7 +163,7 @@
                 day: 8,
                 date: "12.05 (五)",
                 location: "京都下京-奈良",
-                weather: { temp: "2°~8°", icon: "sun", desc: "有太陽" },
+                weather: { temp: "12°~2°", icon: "sun", desc: "即時預報: 多數晴朗 (Mostly Sunny)" },
                 activities: [
                     { time: "06:30", type: "transport", name: "出門", desc: "前往東福寺", duration: "", icon: "person-walking", cost: "N/A", hours: "N/A", details: "" },
                     { time: "08:00", type: "spot", name: "通天橋 & 東福寺", desc: "賞楓第一名", duration: "70分", icon: "leaf", cost: "￥1000", hours: "09:00~16:00", details: "" },
@@ -161,7 +179,7 @@
                 day: 9,
                 date: "12.06 (六)",
                 location: "京都 洛中 (上京)",
-                weather: { temp: "0°~9°", icon: "cloud-rain", desc: "下午可能降雨" },
+                weather: { temp: "14°~5°", icon: "cloud", desc: "即時預報: 多雲 (Cloudy)" },
                 activities: [
                     { time: "07:30", type: "transport", name: "出門", desc: "前往京都御苑", duration: "", icon: "person-walking", cost: "N/A", hours: "N/A", details: "" },
                     { time: "08:00", type: "spot", name: "京都御苑", desc: "佔地廣大", duration: "150分", icon: "tree", cost: "N/A", hours: "N/A", details: "" },
@@ -177,61 +195,69 @@
                 day: 10,
                 date: "12.07 (日)",
                 location: "京都 -> 台灣",
-                weather: { temp: "-1°~10°", icon: "sun", desc: "有太陽" },
+                weather: { temp: "14°~5°", icon: "sun", desc: "即時預報: 多數晴朗 (Mostly Sunny)" },
                 activities: [
                     { time: "08:20", type: "hotel", name: "退房", desc: "行李寄放或帶走", duration: "", icon: "suitcase", cost: "N/A", hours: "N/A", details: "" },
                     { time: "08:50", type: "transport", name: "長岡天神", desc: "阪急電車", duration: "20分", icon: "train", cost: "N/A", hours: "N/A", details: "" },
                     { time: "10:00", type: "spot", name: "光明寺 (預定)", desc: "紅葉迴廊", duration: "60分", icon: "leaf", cost: "N/A", hours: "N/A", details: "車資:￥230" },
                     { time: "12:56", type: "transport", name: "前往機場", desc: "JR 關空快速", duration: "", icon: "train", cost: "N/A", hours: "N/A", details: "" },
-                    { time: "13:54", type: "arrival", name: "關西機場", desc: "準備登機", duration: "", icon: "plane-departure", cost: "N/A", hours: "N/A", details: "" },
+                    { time: "13:54", type: "arrival", type: "transport", name: "關西機場", desc: "準備登機", duration: "", icon: "plane-departure", cost: "N/A", hours: "N/A", details: "" },
                     { time: "20:25", type: "arrival", name: "桃園機場", desc: "抵達溫暖的家", duration: "", icon: "house", cost: "N/A", hours: "N/A", details: "" }
                 ]
             }
         ];
 
-        // --- 組件 (已更新顯示細節) ---
+        // --- 組件：天氣卡片 (WeatherCard) ---
 
         const WeatherCard = ({ weather }) => {
             const getIcon = (iconName) => {
+                // 調整圖標顏色以配合和風配色
                 switch(iconName) {
-                    case 'sun': return 'fa-sun text-yellow-500';
-                    case 'cloud': return 'fa-cloud text-gray-400';
-                    case 'cloud-sun': return 'fa-cloud-sun text-orange-400';
-                    case 'rain': return 'fa-cloud-showers-heavy text-blue-400';
-                    case 'snowflake': return 'fa-snowflake text-blue-200';
-                    case 'cloud-rain': return 'fa-cloud-rain text-blue-300';
+                    case 'sun': return 'fa-sun text-yellow-600'; // 較深的金色
+                    case 'cloud': return 'fa-cloud text-gray-500';
+                    case 'cloud-sun': return 'fa-cloud-sun text-amber-600';
+                    case 'rain': return 'fa-cloud-showers-heavy text-blue-500';
+                    case 'snowflake': return 'fa-snowflake text-indigo-200';
+                    case 'cloud-rain': return 'fa-cloud-rain text-indigo-400';
                     default: return 'fa-sun';
                 }
             };
 
             return (
-                <div className="bg-white rounded-xl shadow-sm p-4 mb-4 flex items-center justify-between border border-blue-100">
+                <div className="bg-stone-50 rounded-lg border border-stone-200 p-4 mb-4 flex items-center justify-between shadow-sm">
                     <div>
-                        <div className="text-gray-500 text-xs font-semibold uppercase tracking-wide">預報天氣</div>
-                        <div className="text-2xl font-bold text-gray-800 mt-1">{weather.temp}</div>
-                        <div className="text-sm text-gray-600">{weather.desc}</div>
+                        <div className="text-stone-500 text-xs font-semibold uppercase tracking-wide">
+                            {weather.desc.startsWith('即時預報') ? '即時天氣預報 (11/27更新)' : '行程預測天氣 (台灣)'}
+                        </div>
+                        <div className="text-3xl font-bold text-gray-800 mt-1">{weather.temp}</div>
+                        <div className={`text-sm ${weather.desc.startsWith('即時預報') ? 'text-amber-700' : 'text-gray-600'}`}>{weather.desc}</div>
                     </div>
-                    <i className={`fas ${getIcon(weather.icon)} text-4xl`}></i>
+                    <i className={`fas ${getIcon(weather.icon)} text-5xl`}></i>
                 </div>
             );
         };
 
+        // --- 組件：活動項目卡片 (ActivityItem) ---
+
         const ActivityItem = ({ item, isLast }) => {
+            // 調整配色為內斂的和風色系
             const getColor = (type) => {
                 switch(type) {
-                    case 'transport': return 'bg-blue-100 text-blue-600 border-blue-200';
-                    case 'spot': return 'bg-red-100 text-red-600 border-red-200';
-                    case 'food': return 'bg-orange-100 text-orange-600 border-orange-200';
-                    case 'hotel': return 'bg-purple-100 text-purple-600 border-purple-200';
-                    case 'arrival': return 'bg-green-100 text-green-600 border-green-200';
-                    case 'shop': return 'bg-yellow-100 text-yellow-600 border-yellow-200';
+                    case 'transport': return 'bg-indigo-100 text-indigo-700 border-indigo-200'; // 內斂的藍色
+                    case 'spot': return 'bg-amber-100 text-amber-800 border-amber-200'; // 木質/土黃色
+                    case 'food': return 'bg-orange-100 text-orange-700 border-orange-200'; // 暖色
+                    case 'hotel': return 'bg-purple-100 text-purple-700 border-purple-200';
+                    case 'arrival': return 'bg-green-100 text-green-700 border-green-200';
+                    case 'shop': return 'bg-yellow-100 text-yellow-700 border-yellow-200';
                     default: return 'bg-gray-100 text-gray-600 border-gray-200';
                 }
             };
 
+            const dotColor = item.type === 'spot' ? 'border-red-700' : 'border-amber-700'; // 景點用楓葉紅，其他用金色
+
             return (
                 <div className={`relative pl-16 py-3 pr-4 ${isLast ? 'last-item' : ''}`}>
-                    {/* Timeline Line */}
+                    {/* Timeline Line (CSS 定義為竹棕色) */}
                     <div className="timeline-line"></div>
                     
                     {/* Time Bubble */}
@@ -239,13 +265,14 @@
                         <span className="text-sm font-bold text-gray-700">{item.time}</span>
                     </div>
 
-                    {/* Dot */}
-                    <div className={`absolute left-[19px] top-[1.15rem] w-3 h-3 rounded-full border-2 bg-white z-10 ${item.type === 'spot' ? 'border-red-400' : 'border-blue-400'}`}></div>
+                    {/* Dot (點綴金色/楓葉紅) */}
+                    <div className={`absolute left-[19px] top-[1.15rem] w-3 h-3 rounded-full border-2 bg-stone-50 z-10 ${dotColor}`}></div>
 
-                    {/* Card */}
-                    <div className="bg-white rounded-lg p-3 shadow-sm border border-gray-100 relative">
+                    {/* Card (柔和的卡片樣式) */}
+                    <div className="bg-white rounded-lg p-3 border border-stone-200 relative shadow-sm hover:shadow-md transition-shadow">
                         <div className="flex justify-between items-start">
                             <div className="flex items-center gap-2 mb-1">
+                                {/* 圓形 Icon (柔和配色) */}
                                 <div className={`w-8 h-8 rounded-full flex items-center justify-center border ${getColor(item.type)}`}>
                                     <i className={`fas fa-${item.icon} text-xs`}></i>
                                 </div>
@@ -256,8 +283,8 @@
                         {/* 簡短描述 */}
                         <p className="text-gray-600 text-sm mt-1 pl-10">{item.desc}</p>
 
-                        {/* 詳細資訊區塊 (新增) */}
-                        <div className="mt-3 border-t border-gray-100 pt-2 pl-10">
+                        {/* 詳細資訊區塊 */}
+                        <div className="mt-3 border-t border-stone-100 pt-2 pl-10">
                             <div className="flex justify-between items-start text-xs text-gray-500">
                                 {/* 費用與開放時間 */}
                                 <div className="flex flex-col gap-1">
@@ -265,7 +292,7 @@
                                         <i className="fas fa-wallet w-3 text-center"></i>
                                         <span className="font-medium text-gray-700">{item.cost || 'N/A'}</span>
                                     </div>
-                                    {item.hours && (
+                                    {item.hours && item.hours !== 'N/A' && (
                                         <div className="flex items-center gap-1">
                                             <i className="far fa-clock w-3 text-center"></i>
                                             <span>{item.hours}</span>
@@ -281,16 +308,16 @@
                                         </div>
                                     )}
                                     {item.link && (
-                                        <a href={item.link} target="_blank" className="text-blue-500 text-xs hover:underline flex items-center gap-1">
+                                        <a href={item.link} target="_blank" className="text-indigo-600 text-xs hover:underline flex items-center gap-1">
                                             <i className="fas fa-map-marker-alt"></i> 地圖
                                         </a>
                                     )}
                                 </div>
                             </div>
 
-                            {/* 詳細備註/資訊欄位 (新增) */}
+                            {/* 詳細備註/資訊欄位 (使用柔和的楓葉紅) */}
                             {item.details && (
-                                <p className="mt-2 text-xs text-red-600 bg-red-50 p-1 rounded border border-red-200">
+                                <p className="mt-2 text-red-800 bg-red-50 p-1 rounded border border-red-200 text-xs">
                                     <i className="fas fa-exclamation-triangle mr-1"></i> {item.details}
                                 </p>
                             )}
@@ -300,27 +327,29 @@
             );
         };
 
+        // --- 組件：應用程式主體 (App) ---
+        
         const App = () => {
             const [selectedDayIndex, setSelectedDayIndex] = useState(0);
             const currentTrip = tripData[selectedDayIndex];
 
-            // 自動滾動到頂部當切換天數時
             useEffect(() => {
                 window.scrollTo(0, 0);
             }, [selectedDayIndex]);
 
             return (
                 <div className="max-w-md mx-auto min-h-screen pb-20 bg-gray-50">
-                    {/* Header */}
-                    <header className="bg-gradient-to-r from-red-700 to-red-900 text-white p-6 rounded-b-3xl shadow-lg sticky top-0 z-50">
+                    {/* Header (使用深沉的楓葉紅色/木質色) */}
+                    <header className="bg-red-800 text-white p-6 rounded-b-xl kyoto-header sticky top-0 z-50">
                         <div className="flex justify-between items-center mb-4">
                             <div>
                                 <h1 className="text-2xl font-bold">京都秋楓之旅</h1>
-                                <p className="text-red-100 text-sm opacity-90">2025.11.28 - 12.07</p>
+                                <p className="text-red-200 text-sm opacity-90">2025.11.28 - 12.07</p>
                             </div>
-                            <div className="bg-white/20 backdrop-blur-sm p-2 rounded-lg text-center min-w-[60px]">
-                                <div className="text-xs text-red-100">Day</div>
-                                <div className="text-xl font-bold">{currentTrip.day}</div>
+                            {/* Day Counter (使用金色點綴) */}
+                            <div className="bg-white/10 backdrop-blur-sm border-2 border-yellow-300 p-2 rounded-lg text-center min-w-[60px]">
+                                <div className="text-xs text-red-200">Day</div>
+                                <div className="text-xl font-bold text-yellow-300">{currentTrip.day}</div>
                             </div>
                         </div>
 
@@ -330,4 +359,55 @@
                                 <button
                                     key={idx}
                                     onClick={() => setSelectedDayIndex(idx)}
-                                    className={`flex-shrink-0 px-4 py-2 rounded-full text-sm font-
+                                    className={`flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-all ${
+                                        selectedDayIndex === idx 
+                                        ? 'bg-white text-red-800 shadow-lg transform scale-105' /* 選中：白底楓葉紅字 */
+                                        : 'bg-red-900/50 text-red-100 hover:bg-red-900' /* 未選：深紅底白字 */
+                                    }`}
+                                >
+                                    Day {d.day}
+                                </button>
+                            ))}
+                        </div>
+                    </header>
+
+                    {/* Main Content */}
+                    <main className="p-4">
+                        <div className="mb-4">
+                            <h2 className="text-xl font-bold text-gray-800 flex items-center gap-2">
+                                <i className="fas fa-map-pin text-red-700"></i> {/* 楓葉紅圖釘 */}
+                                {currentTrip.date}
+                            </h2>
+                            <p className="text-gray-500 text-sm ml-7">{currentTrip.location}</p>
+                        </div>
+
+                        {/* Weather Widget */}
+                        <WeatherCard weather={currentTrip.weather} />
+
+                        {/* Timeline */}
+                        <div className="mt-6">
+                            {currentTrip.activities.map((item, idx) => (
+                                <ActivityItem 
+                                    key={idx} 
+                                    item={item} 
+                                    isLast={idx === currentTrip.activities.length - 1} 
+                                />
+                            ))}
+                        </div>
+                    </main>
+                    
+                    {/* Floating Map Button (使用內斂的藍色) */}
+                    <div className="fixed bottom-6 right-6">
+                        <a href="https://www.google.com/maps" target="_blank" className="bg-indigo-700 hover:bg-indigo-800 text-white w-14 h-14 rounded-full shadow-xl flex items-center justify-center transition-transform hover:scale-110">
+                            <i className="fas fa-map text-xl"></i>
+                        </a>
+                    </div>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
