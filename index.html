@@ -16,17 +16,17 @@
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
             background-color: #fcfaf0; /* 暖米色/和紙色 */
         }
-        /* >>> 時間軸線條優化 (加粗並使用深紅棕色) <<< */
+        /* >>> 時間軸線條：極致加粗與深木色調整 (4px) <<< */
         .timeline-line { 
             position: absolute; 
             left: 24px; 
             top: 30px; 
             bottom: -20px; 
-            width: 3px; /* 加粗至 3px */
-            background-color: #a06e40; /* 豐富的紅棕色木質調 */
-            opacity: 0.8;
+            width: 4px; /* 更粗的線 (4px) */
+            background-color: #5C4033; /* 極深的木碳棕色 */
+            opacity: 1; 
             z-index: 0; 
-            box-shadow: 0 0 4px rgba(0, 0, 0, 0.05); /* 增加微妙的陰影，使其看起來更立體 */
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1); /* 增加明顯陰影 */
         }
         .last-item .timeline-line { display: none; }
         .hide-scrollbar::-webkit-scrollbar { display: none; }
@@ -43,7 +43,7 @@
     <script type="text/babel">
         const { useState, useEffect } = React;
 
-        // --- 數據結構 (已補齊部分交通連結，以示範功能) ---
+        // *** 重要提醒：所有 link 欄位皆已替換為安全佔位符。請手動替換為您的 Google Maps 或 Apple Maps 實際網址。***
         const tripData = [
             {
                 day: 1,
@@ -51,10 +51,10 @@
                 location: "台灣 -> 台北",
                 weather: { temp: "21°~18°", icon: "cloud", desc: "預估: 舒適 (隔早轉冷)" },
                 activities: [
-                    { time: "13:00", type: "transport", name: "豐原車站", desc: "坐自強號前往台北", duration: "129分", icon: "train", cost: "N/A", details: "坐自強", link: "https://www.google.com/maps-1" },
-                    { time: "15:20", type: "transport", name: "台北車站", desc: "轉捷運往淡水", duration: "50分", icon: "subway", cost: "N/A", details: "", link: "https://www.google.com/maps-2" },
+                    { time: "13:00", type: "transport", name: "豐原車站", desc: "坐自強號前往台北", duration: "129分", icon: "train", cost: "N/A", details: "坐自強", link: "#map-link-1" },
+                    { time: "15:20", type: "transport", name: "台北車站", desc: "轉捷運往淡水", duration: "50分", icon: "subway", cost: "N/A", details: "", link: "#map-link-2" },
                     { time: "16:25", type: "spot", name: "捷運淡水站", desc: "看天氣決定是否停留", duration: "95分", icon: "location-dot", cost: "N/A", details: "※看天氣 再決定要不要去" },
-                    { time: "20:00", type: "transport", name: "桃園機場", desc: "前往機場準備過夜", duration: "", icon: "plane-departure", cost: "N/A", details: "", link: "https://www.google.com/maps-3" }
+                    { time: "20:00", type: "transport", name: "桃園機場", desc: "前往機場準備過夜", duration: "", icon: "plane-departure", cost: "N/A", details: "", link: "#map-link-3" }
                 ]
             },
             {
@@ -63,16 +63,16 @@
                 location: "京都市區 (車站周圍)",
                 weather: { temp: "15°~6°", icon: "sun", desc: "即時預報: 晴朗 (Sunny)" },
                 activities: [
-                    { time: "05:00", type: "transport", name: "長榮櫃台", desc: "05:00 開櫃", duration: "30分", icon: "ticket", cost: "N/A", details: "", link: "https://maps.app.goo.gl/example-temple-route-1" },
-                    { time: "06:30", type: "transport", name: "起飛 BR-178", desc: "飛往關西機場", duration: "150分", icon: "plane", cost: "N/A", details: "", link: "https://maps.app.goo.gl/example-temple-route-2" },
+                    { time: "05:00", type: "transport", name: "長榮櫃台", desc: "05:00 開櫃", duration: "30分", icon: "ticket", cost: "N/A", details: "", link: "#map-link-4" },
+                    { time: "06:30", type: "transport", name: "起飛 BR-178", desc: "飛往關西機場", duration: "150分", icon: "plane", cost: "N/A", details: "", link: "#map-link-5" },
                     { time: "09:55", type: "arrival", name: "關西機場", desc: "抵達 (東京時間)", duration: "35分", icon: "plane-arrival", cost: "N/A", details: "" },
-                    { time: "10:45", type: "transport", name: "機場車站", desc: "開 KLOOK 刷 QR 進站", duration: "20分", icon: "train", cost: "N/A", details: "", link: "https://maps.app.goo.gl/example-temple-route-3" },
+                    { time: "10:45", type: "transport", name: "機場車站", desc: "開 KLOOK 刷 QR 進站", duration: "20分", icon: "train", cost: "N/A", details: "", link: "#map-link-6" },
                     { time: "12:31", type: "transport", name: "抵達京都車站", desc: "JR 哈囉凱蒂", duration: "20分", icon: "train", cost: "N/A", details: "" },
-                    { time: "13:10", type: "hotel", name: "王子飯店", desc: "計程車過去放行李", duration: "20分", icon: "hotel", cost: "N/A", details: "" },
+                    { time: "13:10", type: "hotel", name: "王子飯店", desc: "計程車過去放行李", duration: "20分", icon: "hotel", cost: "N/A", details: "" , link: "https://maps.app.goo.gl/q7B8NksxrqJrpwXw6" },
                     { time: "13:40", type: "spot", name: "護國寺 (東寺)", desc: "公車 207 或 17", duration: "60分", icon: "gopuram", cost: "￥500", hours: "08:00~17:00", details: "" },
                     { time: "14:55", type: "spot", name: "西本願寺", desc: "金黃銀杏必看", duration: "40分", icon: "tree", cost: "Free", hours: "05:30~17:30", details: "" },
                     { time: "15:46", type: "spot", name: "東本願寺", desc: "日落前速拍", duration: "44分", icon: "camera", cost: "Free", hours: "05:30~17:30", details: "" },
-                    { time: "17:00", type: "food", name: "麵屋 豬一", desc: "現場排隊 (不能預約)", duration: "60分", icon: "utensils", link: "http://googleusercontent.com/maps.google.com/food-3", cost: "N/A", hours: "N/A", details: "" },
+                    { time: "17:00", type: "food", name: "麵屋 豬一", desc: "現場排隊 (不能預約)", duration: "60分", icon: "utensils", link: "#map-link-7", cost: "N/A", hours: "N/A", details: "" },
                     { time: "18:20", type: "shop", name: "京都 LOFT", desc: "買衣服、逛街", duration: "120分", icon: "bag-shopping", cost: "N/A", hours: "N/A", details: "" }
                 ]
             },
@@ -82,12 +82,12 @@
                 location: "京都左京 (叡山鞍馬)",
                 weather: { temp: "18°~7°", icon: "sun", desc: "即時預報: 多數晴朗 (Mostly Sunny)" },
                 activities: [
-                    { time: "07:00", type: "transport", name: "出門", desc: "06:45 日出", duration: "", icon: "person-walking", cost: "N/A", details: "", link: "https://maps.app.goo.gl/example-ramen-1" },
-                    { time: "07:33", type: "transport", name: "河原町今出川", desc: "公車 3 號", duration: "27分", icon: "bus", cost: "N/A", details: "", link: "https://maps.app.goo.gl/example-ramen-2" },
+                    { time: "07:00", type: "transport", name: "出門", desc: "06:45 日出", duration: "", icon: "person-walking", cost: "N/A", details: "", link: "#map-link-8" },
+                    { time: "07:33", type: "transport", name: "河原町今出川", desc: "公車 3 號", duration: "27分", icon: "bus", cost: "N/A", details: "", link: "#map-link-9" },
                     { time: "08:15", type: "spot", name: "下鴨神社", desc: "買限定御守 (9點開)", duration: "60分", icon: "torii-gate", cost: "N/A", hours: "06:30~17:00", details: "御株印 9:00 開" },
                     { time: "10:05", type: "spot", name: "鞍馬寺", desc: "爬山行程，注意熊出沒", duration: "115分", icon: "mountain", cost: "￥470", hours: "N/A", details: "" },
                     { time: "12:10", type: "spot", name: "貴船神社", desc: "著名紅燈籠", duration: "30分", icon: "torii-gate", cost: "N/A", hours: "09:00~17:00", details: "" },
-                    { time: "13:35", type: "transport", name: "貴船巴士站", desc: "前往一乘寺", duration: "", icon: "bus", cost: "N/A", details: "", link: "https://maps.app.goo.gl/example-ramen-3" },
+                    { time: "13:35", type: "transport", name: "貴船巴士站", desc: "前往一乘寺", duration: "", icon: "bus", cost: "N/A", details: "", link: "#map-link-10" },
                     { time: "14:40", type: "spot", name: "詩仙堂", desc: "庭園造景", duration: "30分", icon: "leaf", cost: "￥700", hours: "09:00~17:00", details: "" },
                     { time: "17:40", type: "food", name: "牛樂亭", desc: "已訂位 18:00", duration: "110分", icon: "utensils", cost: "N/A", hours: "N/A", details: "" }
                 ]
@@ -98,8 +98,8 @@
                 location: "京都左京 (大原周圍)",
                 weather: { temp: "19°~10°", icon: "cloud-sun", desc: "即時預報: 多雲間歇晴朗" },
                 activities: [
-                    { time: "07:00", type: "transport", name: "出門", desc: "前往四条高倉", duration: "", icon: "person-walking", cost: "N/A", details: "", link: "https://maps.app.goo.gl/bus-route-3-1" },
-                    { time: "08:22", type: "transport", name: "抵達大原", desc: "公車特17", duration: "", icon: "bus", cost: "N/A", details: "", link: "https://maps.app.goo.gl/bus-route-3-2" },
+                    { time: "07:00", type: "transport", name: "出門", desc: "前往四条高倉", duration: "", icon: "person-walking", cost: "N/A", details: "", link: "#map-link-11" },
+                    { time: "08:22", type: "transport", name: "抵達大原", desc: "公車特17", duration: "", icon: "bus", cost: "N/A", details: "", link: "#map-link-12" },
                     { time: "09:00", type: "spot", name: "三千院", desc: "大原賞楓名所", duration: "40分", icon: "tree", cost: "￥700", hours: "08:30~17:00", details: "" },
                     { time: "09:45", type: "spot", name: "寶光院 & 勝林院", desc: "周邊寺廟巡禮", duration: "60分", icon: "gopuram", cost: "N/A", hours: "N/A", details: "" },
                     { time: "11:22", type: "food", name: "芹生茶屋", desc: "蕎麥麵、蕨餅", duration: "38分", icon: "utensils", cost: "N/A", hours: "N/A", details: "" },
@@ -115,8 +115,8 @@
                 location: "京都嵯峨嵐山",
                 weather: { temp: "17°~7°", icon: "cloud-sun", desc: "即時預報: 多雲間歇晴朗" },
                 activities: [
-                    { time: "06:00", type: "transport", name: "出門", desc: "前往四条大宮", duration: "", icon: "person-walking", cost: "N/A", details: "", link: "https://maps.app.goo.gl/kibune-bus-1" },
-                    { time: "06:35", type: "transport", name: "嵐山站", desc: "嵐電抵達", duration: "", icon: "train", cost: "N/A", details: "", link: "https://maps.app.goo.gl/kibune-bus-2" },
+                    { time: "06:00", type: "transport", name: "出門", desc: "前往四条大宮", duration: "", icon: "person-walking", cost: "N/A", details: "", link: "#map-link-13" },
+                    { time: "06:35", type: "transport", name: "嵐山站", desc: "嵐電抵達", duration: "", icon: "train", cost: "N/A", details: "", link: "#map-link-14" },
                     { time: "07:30", type: "spot", name: "天龍寺", desc: "早到先去渡月橋", duration: "50分", icon: "gopuram", cost: "￥500", hours: "08:30~17:00", details: "" },
                     { time: "08:55", type: "spot", name: "寶筐院", desc: "紅葉名所", duration: "35分", icon: "leaf", cost: "￥500", hours: "N/A", details: "" },
                     { time: "09:45", type: "food", name: "嵯峨鳥居本 聖", desc: "抹茶咖啡牛奶", duration: "30分", icon: "mug-hot", cost: "N/A", hours: "N/A", details: "" },
@@ -133,7 +133,7 @@
                 location: "京都東山",
                 weather: { temp: "10°~4°", icon: "cloud", desc: "即時預報: 多雲 (Cloudy)" },
                 activities: [
-                    { time: "05:00", type: "transport", name: "出門", desc: "計程車前往五重塔", duration: "", icon: "taxi", cost: "N/A", details: "06:48日出", link: "https://www.google.com/maps-1-1" },
+                    { time: "05:00", type: "transport", name: "出門", desc: "計程車前往五重塔", duration: "", icon: "taxi", cost: "N/A", details: "06:48日出", link: "#map-link-15" },
                     { time: "06:00", type: "spot", name: "清水寺 仁王門", desc: "仁王門 (06:00開)", duration: "40分", icon: "gopuram", cost: "￥500", hours: "06:00~18:00", details: "京都清水寺1日行程-參觀重點..." },
                     { time: "07:10", type: "spot", name: "八坂神社", desc: "速拍", duration: "20分", icon: "torii-gate", cost: "N/A", hours: "24hr", details: "" },
                     { time: "09:45", type: "spot", name: "南禪寺", desc: "水路閣", duration: "60分", icon: "archway", cost: "￥1600", hours: "08:40~17:00", details: "三門+方丈+南禪院" },
@@ -150,7 +150,7 @@
                 location: "京都山科-宇治",
                 weather: { temp: "9°~1°", icon: "cloud", desc: "即時預報: 多雲 (Cloudy)" },
                 activities: [
-                    { time: "06:50", type: "transport", name: "出門", desc: "前往山科", duration: "", icon: "person-walking", cost: "N/A", details: "", link: "https://www.google.com/maps-2-1" },
+                    { time: "06:50", type: "transport", name: "出門", desc: "前往山科", duration: "", icon: "person-walking", cost: "N/A", details: "", link: "#map-link-16" },
                     { time: "08:35", type: "spot", name: "毘沙門堂", desc: "勅使坂紅葉", duration: "45分", icon: "leaf", cost: "￥700", hours: "N/A", details: "" },
                     { time: "10:00", type: "spot", name: "醍醐寺", desc: "世界遺產", duration: "90分", icon: "gopuram", cost: "￥1500", hours: "09:00~17:00", details: "" },
                     { time: "12:30", type: "food", name: "宇治 Food Park", desc: "黑毛和牛", duration: "40分", icon: "utensils", cost: "N/A", hours: "N/A", details: "" },
@@ -166,14 +166,14 @@
                 location: "京都下京-奈良",
                 weather: { temp: "12°~2°", icon: "sun", desc: "即時預報: 多數晴朗 (Mostly Sunny)" },
                 activities: [
-                    { time: "06:30", type: "transport", name: "出門", desc: "前往東福寺", duration: "", icon: "person-walking", cost: "N/A", details: "", link: "https://www.google.com/maps-3-1" },
+                    { time: "06:30", type: "transport", name: "出門", desc: "前往東福寺", duration: "", icon: "person-walking", cost: "N/A", details: "", link: "#map-link-17" },
                     { time: "08:00", type: "spot", name: "通天橋 & 東福寺", desc: "賞楓第一名", duration: "70分", icon: "leaf", cost: "￥1000", hours: "09:00~16:00", details: "" },
-                    { time: "10:10", type: "transport", name: "近鐵奈良站", desc: "抵達奈良", duration: "", icon: "train", cost: "N/A", details: "", link: "https://www.google.com/maps-3-2" },
+                    { time: "10:10", type: "transport", name: "近鐵奈良站", desc: "抵達奈良", duration: "", icon: "train", cost: "N/A", details: "", link: "#map-link-18" },
                     { time: "11:35", type: "spot", name: "春日大社", desc: "鹿比較溫和", duration: "40分", icon: "torii-gate", cost: "￥700", hours: "09:00~16:00", details: "" },
                     { time: "12:20", type: "food", name: "水谷茶屋", desc: "注意營業時間", duration: "30分", icon: "utensils", cost: "N/A", hours: "N/A", details: "" },
                     { time: "13:35", type: "spot", name: "東大寺", desc: "大佛殿、南大門", duration: "30分", icon: "gopuram", cost: "￥800", hours: "07:30~17:30", details: "" },
                     { time: "16:40", type: "spot", name: "若草山頂", desc: "眺望市區", duration: "40分", icon: "mountain", cost: "N/A", hours: "N/A", details: "" },
-                    { time: "19:00", type: "transport", name: "回京都", desc: "近鐵特急", duration: "60分", icon: "train", cost: "N/A", details: "", link: "https://www.google.com/maps-3-3" }
+                    { time: "19:00", type: "transport", name: "回京都", desc: "近鐵特急", duration: "60分", icon: "train", cost: "N/A", details: "", link: "#map-link-19" }
                 ]
             },
             {
@@ -182,7 +182,7 @@
                 location: "京都 洛中 (上京)",
                 weather: { temp: "14°~5°", icon: "cloud", desc: "即時預報: 多雲 (Cloudy)" },
                 activities: [
-                    { time: "07:30", type: "transport", name: "出門", desc: "前往京都御苑", duration: "", icon: "person-walking", cost: "N/A", details: "", link: "https://maps.app.goo.gl/example-temple-route-1-1" },
+                    { time: "07:30", type: "transport", name: "出門", desc: "前往京都御苑", duration: "", icon: "person-walking", cost: "N/A", details: "", link: "#map-link-20" },
                     { time: "08:00", type: "spot", name: "京都御苑", desc: "佔地廣大", duration: "150分", icon: "tree", cost: "N/A", hours: "N/A", details: "" },
                     { time: "11:05", type: "spot", name: "相國寺", desc: "歷史古剎", duration: "25分", icon: "gopuram", cost: "N/A", hours: "N/A", details: "" },
                     { time: "12:10", type: "spot", name: "妙覺寺 & 妙顯寺", desc: "周邊散步", duration: "60分", icon: "location-dot", cost: "N/A", hours: "N/A", details: "" },
@@ -199,9 +199,9 @@
                 weather: { temp: "14°~5°", icon: "sun", desc: "即時預報: 多數晴朗 (Mostly Sunny)" },
                 activities: [
                     { time: "08:20", type: "hotel", name: "退房", desc: "行李寄放或帶走", duration: "", icon: "suitcase", cost: "N/A", details: "" },
-                    { time: "08:50", type: "transport", name: "長岡天神", desc: "阪急電車", duration: "20分", icon: "train", cost: "N/A", details: "", link: "https://www.google.com/maps0-1" },
+                    { time: "08:50", type: "transport", name: "長岡天神", desc: "阪急電車", duration: "20分", icon: "train", cost: "N/A", details: "", link: "#map-link-21" },
                     { time: "10:00", type: "spot", name: "光明寺 (預定)", desc: "紅葉迴廊", duration: "60分", icon: "leaf", cost: "N/A", hours: "N/A", details: "車資:￥230" },
-                    { time: "12:56", type: "transport", name: "前往機場", desc: "JR 關空快速", duration: "", icon: "train", cost: "N/A", details: "", link: "https://www.google.com/maps0-2" },
+                    { time: "12:56", type: "transport", name: "前往機場", desc: "JR 關空快速", duration: "", icon: "train", cost: "N/A", details: "", link: "#map-link-22" },
                     { time: "13:54", type: "arrival", name: "關西機場", desc: "準備登機", duration: "", icon: "plane-departure", cost: "N/A", details: "" },
                     { time: "20:25", type: "arrival", name: "桃園機場", desc: "抵達溫暖的家", duration: "", icon: "house", cost: "N/A", details: "" }
                 ]
@@ -258,26 +258,30 @@
             };
             
             // 節點邊框顏色：POI/Food 使用楓葉紅，Transport 使用木棕色
-            const dotColor = (item.type === 'spot' || item.type === 'food' || item.type === 'hotel') ? 'border-red-700' : 'border-amber-700'; 
+            const dotColorClass = (item.type === 'spot' || item.type === 'food' || item.type === 'hotel') ? 'border-red-700' : 'border-amber-700'; 
             
             const containerClasses = `relative pl-16 py-3 pr-4 ${isLast ? 'last-item' : ''}`;
             
             // 使用暖米色作為卡片背景
             let cardClasses = "bg-yellow-50 rounded-lg p-3 border border-amber-200 relative shadow-sm hover:shadow-md transition-shadow";
 
-            // --- 節點渲染邏輯 (優化後) ---
-            const dotSizeClass = 'w-4 h-4'; // 16px
-            // left-[17px] 用來將 16px 的點中心對齊 3px 線條 (left: 24px)
-            const dotPositionClass = 'left-[17px] top-[1rem]'; 
+            // --- 節點渲染邏輯 (極致優化後) ---
+            const dotSizeClass = 'w-5 h-5'; // 20px
+            // left-[16px] 用來將 20px 的點中心對齊 4px 線條 (left: 24px)
+            const dotPositionClass = 'left-[14px] top-[1rem]'; 
             
             const TimelineDot = (
                 <div 
                     className={`absolute ${dotPositionClass} ${dotSizeClass} rounded-full z-10 flex items-center justify-center`} 
-                    style={{ backgroundColor: BG_COLOR, border: `3px solid ${dotColor.replace('border-', 'var(--tw-border-opacity, 1) #')}` }}
+                    // 為了確保線條和節點完美對齊，使用絕對定位和自定義樣式
+                    style={{ 
+                        backgroundColor: BG_COLOR, 
+                        border: `4px solid ${dotColorClass.replace('border-', 'var(--tw-border-opacity, 1) #')}` 
+                    }}
                 >
-                    {/* 主要停留點 (POI, Food, Hotel) 加上精緻紅點印記 */}
+                    {/* 主要停留點 (POI, Food, Hotel) 加上精緻紅點印記 (使用更大的點) */}
                     {(item.type === 'spot' || item.type === 'food' || item.type === 'hotel') && (
-                        <i className="fas fa-circle text-red-700 text-[6px]"></i>
+                        <i className="fas fa-circle text-red-700 text-xs"></i>
                     )}
                 </div>
             );
@@ -292,9 +296,9 @@
                         {/* Timeline Line (竹棕色加粗) */}
                         <div className="timeline-line"></div>
                         
-                        {/* Time Bubble (位置微調) */}
+                        {/* Time Bubble (文字超粗體) */}
                         <div className="absolute left-0 top-4 w-12 text-right">
-                            <span className="text-sm font-bold text-gray-700">{item.time}</span>
+                            <span className="text-sm font-extrabold text-gray-800">{item.time}</span>
                         </div>
 
                         {/* 節點 */}
@@ -351,9 +355,9 @@
                     {/* Timeline Line (竹棕色加粗) */}
                     <div className="timeline-line"></div>
                     
-                    {/* Time Bubble */}
+                    {/* Time Bubble (文字超粗體) */}
                     <div className="absolute left-0 top-4 w-12 text-right">
-                        <span className="text-sm font-bold text-gray-700">{item.time}</span>
+                        <span className="text-sm font-extrabold text-gray-800">{item.time}</span>
                     </div>
 
                     {/* 節點 */}
@@ -398,6 +402,7 @@
                                             <i className="far fa-hourglass-half"></i> 停留 {item.duration}
                                         </div>
                                     )}
+                                    {/* 修正地圖連結，使用 item.link */}
                                     {item.link && (
                                         <a href={item.link} target="_blank" className="text-indigo-600 text-xs hover:underline flex items-center gap-1">
                                             <i className="fas fa-map-marker-alt"></i> 查看地圖
@@ -487,9 +492,9 @@
                         </div>
                     </main>
                     
-                    {/* Floating Map Button (主地圖連結) */}
+                    {/* Floating Map Button (主地圖連結 - 使用安全佔位符) */}
                     <div className="fixed bottom-6 right-6">
-                        <a href="https://www.google.com/maps" target="_blank" className="bg-indigo-700 hover:bg-indigo-800 text-white w-14 h-14 rounded-full shadow-xl flex items-center justify-center transition-transform hover:scale-110">
+                        <a href="#main-map" target="_blank" className="bg-indigo-700 hover:bg-indigo-800 text-white w-14 h-14 rounded-full shadow-xl flex items-center justify-center transition-transform hover:scale-110">
                             <i className="fas fa-map text-xl"></i>
                         </a>
                     </div>
