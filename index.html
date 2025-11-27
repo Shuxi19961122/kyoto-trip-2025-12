@@ -201,7 +201,7 @@
                     { time: "08:50", type: "transport", name: "長岡天神", desc: "阪急電車", duration: "20分", icon: "train", cost: "N/A", hours: "N/A", details: "" },
                     { time: "10:00", type: "spot", name: "光明寺 (預定)", desc: "紅葉迴廊", duration: "60分", icon: "leaf", cost: "N/A", hours: "N/A", details: "車資:￥230" },
                     { time: "12:56", type: "transport", name: "前往機場", desc: "JR 關空快速", duration: "", icon: "train", cost: "N/A", hours: "N/A", details: "" },
-                    { time: "13:54", type: "arrival", type: "transport", name: "關西機場", desc: "準備登機", duration: "", icon: "plane-departure", cost: "N/A", hours: "N/A", details: "" },
+                    { time: "13:54", type: "arrival", name: "關西機場", desc: "準備登機", duration: "", icon: "plane-departure", cost: "N/A", hours: "N/A", details: "" },
                     { time: "20:25", type: "arrival", name: "桃園機場", desc: "抵達溫暖的家", duration: "", icon: "house", cost: "N/A", hours: "N/A", details: "" }
                 ]
             }
@@ -237,26 +237,92 @@
             );
         };
 
-        // --- 組件：活動項目卡片 (ActivityItem) ---
+        // --- 組件：活動/交通項目 (ActivityItem) ---
 
         const ActivityItem = ({ item, isLast }) => {
-            // 調整配色為內斂的和風色系
+            
+            // 判斷是否為交通/抵達項目，給予專屬的視覺風格
+            const isConnector = item.type === 'transport' || item.type === 'arrival';
+
+            // 獲取顏色類別
             const getColor = (type) => {
                 switch(type) {
-                    case 'transport': return 'bg-indigo-100 text-indigo-700 border-indigo-200'; // 內斂的藍色
-                    case 'spot': return 'bg-amber-100 text-amber-800 border-amber-200'; // 木質/土黃色
-                    case 'food': return 'bg-orange-100 text-orange-700 border-orange-200'; // 暖色
+                    case 'transport':
+                    case 'arrival': return 'bg-gray-100 text-gray-600 border-gray-200'; // 交通：輕盈的灰色
+                    case 'spot': return 'bg-amber-100 text-amber-800 border-amber-200'; // 景點：木質/土黃色
+                    case 'food': return 'bg-orange-100 text-orange-700 border-orange-200'; // 餐飲：暖色
                     case 'hotel': return 'bg-purple-100 text-purple-700 border-purple-200';
-                    case 'arrival': return 'bg-green-100 text-green-700 border-green-200';
                     case 'shop': return 'bg-yellow-100 text-yellow-700 border-yellow-200';
                     default: return 'bg-gray-100 text-gray-600 border-gray-200';
                 }
             };
+            
+            // 調整點的顏色：景點用楓葉紅 (red-700)，交通用竹棕色 (amber-700)
+            const dotColor = (item.type === 'spot' || item.type === 'food') ? 'border-red-700' : 'border-amber-700'; 
+            
+            // 基礎容器樣式
+            const containerClasses = `relative pl-16 py-3 pr-4 ${isLast ? 'last-item' : ''}`;
+            
+            // 卡片基礎樣式
+            let cardClasses = "bg-white rounded-lg p-3 border border-stone-200 relative shadow-sm hover:shadow-md transition-shadow";
 
-            const dotColor = item.type === 'spot' ? 'border-red-700' : 'border-amber-700'; // 景點用楓葉紅，其他用金色
+            // --- 交通連接器 (Transportation Connector) 樣式 ---
+            if (isConnector) {
+                // 專屬樣式：更窄、背景更輕、虛線邊框
+                cardClasses = `bg-stone-50 rounded-lg p-3 border border-dashed border-gray-300 relative shadow-sm hover:shadow-md transition-shadow`;
 
+                return (
+                    <div className={containerClasses}>
+                        {/* Timeline Line (CSS 定義為竹棕色) */}
+                        <div className="timeline-line"></div>
+                        
+                        {/* Time Bubble */}
+                        <div className="absolute left-0 top-4 w-12 text-right">
+                            <span className="text-sm font-bold text-gray-700">{item.time}</span>
+                        </div>
+
+                        {/* Dot (點綴金色/楓葉紅) */}
+                        <div className={`absolute left-[19px] top-[1.15rem] w-3 h-3 rounded-full border-2 bg-stone-50 z-10 ${dotColor}`}></div>
+
+                        {/* 交通卡片 */}
+                        <div className={cardClasses}>
+                            <div className="flex justify-between items-center">
+                                <div className="flex items-center gap-2">
+                                    {/* 交通圖標 (放大且使用主色調) */}
+                                    <div className={`w-8 h-8 rounded-full flex items-center justify-center border ${getColor(item.type)}`}>
+                                        <i className={`fas fa-${item.icon} text-lg`}></i>
+                                    </div>
+                                    <div className="flex flex-col">
+                                        <h3 className="font-bold text-gray-800 text-base leading-tight">
+                                            {item.name}
+                                        </h3>
+                                        {/* 耗時時間 (突顯) */}
+                                        {item.duration && (
+                                            <div className="text-sm text-red-700 font-semibold flex items-center gap-1">
+                                                <i className="far fa-hourglass-half"></i> {item.duration}
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            {/* 交通描述/細節 */}
+                            <p className="text-gray-600 text-sm mt-2">{item.desc}</p>
+                            
+                            {/* 詳細備註/資訊欄位 (柔和的楓葉紅) */}
+                            {item.details && (
+                                <p className="mt-2 text-red-800 bg-red-50 p-1 rounded border border-red-200 text-xs">
+                                    <i className="fas fa-exclamation-triangle mr-1"></i> {item.details}
+                                </p>
+                            )}
+                        </div>
+                    </div>
+                );
+            }
+
+            // --- 景點/動作卡片 (POI/Action) 樣式 ---
             return (
-                <div className={`relative pl-16 py-3 pr-4 ${isLast ? 'last-item' : ''}`}>
+                <div className={containerClasses}>
                     {/* Timeline Line (CSS 定義為竹棕色) */}
                     <div className="timeline-line"></div>
                     
@@ -268,8 +334,8 @@
                     {/* Dot (點綴金色/楓葉紅) */}
                     <div className={`absolute left-[19px] top-[1.15rem] w-3 h-3 rounded-full border-2 bg-stone-50 z-10 ${dotColor}`}></div>
 
-                    {/* Card (柔和的卡片樣式) */}
-                    <div className="bg-white rounded-lg p-3 border border-stone-200 relative shadow-sm hover:shadow-md transition-shadow">
+                    {/* 景點/動作卡片 */}
+                    <div className={cardClasses}>
                         <div className="flex justify-between items-start">
                             <div className="flex items-center gap-2 mb-1">
                                 {/* 圓形 Icon (柔和配色) */}
@@ -330,7 +396,7 @@
         // --- 組件：應用程式主體 (App) ---
         
         const App = () => {
-            const [selectedDayIndex, setSelectedDayIndex] = useState(0);
+            const [selectedDayIndex, setSelectedDayIndex] = useState(1); // 預設從 Day 2 開始看京都
             const currentTrip = tripData[selectedDayIndex];
 
             useEffect(() => {
