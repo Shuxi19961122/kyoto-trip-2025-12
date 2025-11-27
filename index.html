@@ -68,7 +68,7 @@
                     { time: "09:55", type: "arrival", name: "關西機場", desc: "抵達 (東京時間)", duration: "35分", icon: "plane-arrival", cost: "N/A", details: "" },
                     { time: "10:45", type: "transport", name: "機場車站", desc: "開 KLOOK 刷 QR 進站", duration: "20分", icon: "train", cost: "N/A", details: "", link: "#map-link-6" },
                     { time: "12:31", type: "transport", name: "抵達京都車站", desc: "JR 哈囉凱蒂", duration: "20分", icon: "train", cost: "N/A", details: "" },
-                    { time: "13:10", type: "hotel", name: "王子飯店", desc: "計程車過去放行李", duration: "20分", icon: "hotel", cost: "N/A", details: "" , link: "https://maps.app.goo.gl/q7B8NksxrqJrpwXw6" },
+                    { time: "13:10", type: "hotel", name: "王子飯店", desc: "計程車過去放行李", duration: "20分", icon: "hotel", cost: "N/A", details: "" },
                     { time: "13:40", type: "spot", name: "護國寺 (東寺)", desc: "公車 207 或 17", duration: "60分", icon: "gopuram", cost: "￥500", hours: "08:00~17:00", details: "" },
                     { time: "14:55", type: "spot", name: "西本願寺", desc: "金黃銀杏必看", duration: "40分", icon: "tree", cost: "Free", hours: "05:30~17:30", details: "" },
                     { time: "15:46", type: "spot", name: "東本願寺", desc: "日落前速拍", duration: "44分", icon: "camera", cost: "Free", hours: "05:30~17:30", details: "" },
@@ -428,6 +428,17 @@
         const App = () => {
             const [selectedDayIndex, setSelectedDayIndex] = useState(1); 
             const currentTrip = tripData[selectedDayIndex];
+            const totalDays = tripData.length; // 總天數
+
+            // 導航邏輯：上一天
+            const goToPrevDay = () => {
+                setSelectedDayIndex(prevIndex => Math.max(0, prevIndex - 1));
+            };
+
+            // 導航邏輯：下一天
+            const goToNextDay = () => {
+                setSelectedDayIndex(prevIndex => Math.min(totalDays - 1, prevIndex + 1));
+            };
 
             useEffect(() => {
                 window.scrollTo(0, 0);
@@ -437,19 +448,45 @@
                 <div className="max-w-md mx-auto min-h-screen pb-20 bg-[#fcfaf0]"> 
                     {/* Header (使用深沉的楓葉紅色/木質色) */}
                     <header className="bg-red-800 text-white p-6 rounded-b-xl kyoto-header sticky top-0 z-50">
+                        
+                        {/* 標題與左右導航按鈕 */}
                         <div className="flex justify-between items-center mb-4">
+                            
+                            {/* 左側: 標題資訊 */}
                             <div>
                                 <h1 className="text-2xl font-bold">京都秋楓之旅</h1>
                                 <p className="text-red-200 text-sm opacity-90">2025.11.28 - 12.07</p>
                             </div>
-                            {/* Day Counter (使用金色點綴) */}
-                            <div className="bg-white/10 backdrop-blur-sm border-2 border-yellow-300 p-2 rounded-lg text-center min-w-[60px]">
-                                <div className="text-xs text-red-200">Day</div>
-                                <div className="text-xl font-bold text-yellow-300">{currentTrip.day}</div>
+                            
+                            {/* 右側: 日期切換按鈕與 Day Counter (新增左右按鈕) */}
+                            <div className="flex items-center gap-2">
+                                {/* 向左按鈕 */}
+                                <button 
+                                    onClick={goToPrevDay} 
+                                    disabled={selectedDayIndex === 0}
+                                    className={`bg-white/10 w-8 h-8 rounded-full flex items-center justify-center transition-colors ${selectedDayIndex === 0 ? 'opacity-30 cursor-not-allowed' : 'hover:bg-white/20'}`}
+                                >
+                                    <i className="fas fa-chevron-left text-sm"></i>
+                                </button>
+
+                                {/* Day Counter */}
+                                <div className="bg-white/10 backdrop-blur-sm border-2 border-yellow-300 p-2 rounded-lg text-center min-w-[60px]">
+                                    <div className="text-xs text-red-200">Day</div>
+                                    <div className="text-xl font-bold text-yellow-300">{currentTrip.day}</div>
+                                </div>
+
+                                {/* 向右按鈕 */}
+                                <button 
+                                    onClick={goToNextDay} 
+                                    disabled={selectedDayIndex === totalDays - 1}
+                                    className={`bg-white/10 w-8 h-8 rounded-full flex items-center justify-center transition-colors ${selectedDayIndex === totalDays - 1 ? 'opacity-30 cursor-not-allowed' : 'hover:bg-white/20'}`}
+                                >
+                                    <i className="fas fa-chevron-right text-sm"></i>
+                                </button>
                             </div>
                         </div>
 
-                        {/* Day Scroller */}
+                        {/* Day Scroller (保留，作為快速跳轉的選項) */}
                         <div className="flex gap-3 overflow-x-auto hide-scrollbar pb-2">
                             {tripData.map((d, idx) => (
                                 <button
