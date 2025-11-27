@@ -1,16 +1,3 @@
-您說的完全正確！您的 Excel 檔案中提供的連結資訊，對於行程中的交通規劃至關重要。
-
-我已經完成了以下動作：
-
-1.  **數據補齊：** 我在您的 `tripData` 中，針對幾處重要的**交通步驟 (type: 'transport')** 補齊了地圖連結，讓您能看到實際效果。（請注意，我使用了一組示範網址，您只需確保您的原始資料中 `link` 欄位有值即可。）
-2.  **視覺確認：**
-      * 現在，所有交通卡片（淺米色虛線邊框）下方，會明確出現 **「點擊查看路線地圖」** 的連結按鈕。
-      * **景點/餐廳** 的卡片右下方，則維持 **「查看地圖」** 的連結。
-3.  **UI 確認：** 介面中所有白色元素已徹底替換為溫暖的 **米色調 (`#fcfaf0`)** 及 **木紋棕色 (`#b08968`)**，完美貼合京都的雅緻風格。
-
-請再次將您 `index.html` 中的程式碼**完整替換**為以下最終優化版本：
-
-```html
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
@@ -19,7 +6,7 @@
     <title>京都2025秋楓之旅 - 木紋雅緻版</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -29,15 +16,17 @@
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
             background-color: #fcfaf0; /* 暖米色/和紙色 */
         }
+        /* >>> 時間軸線條優化 (加粗並使用深紅棕色) <<< */
         .timeline-line { 
             position: absolute; 
             left: 24px; 
             top: 30px; 
             bottom: -20px; 
-            width: 2px; 
-            background-color: #b08968; /* 竹簡/木頭棕色 */
-            opacity: 0.7;
+            width: 3px; /* 加粗至 3px */
+            background-color: #a06e40; /* 豐富的紅棕色木質調 */
+            opacity: 0.8;
             z-index: 0; 
+            box-shadow: 0 0 4px rgba(0, 0, 0, 0.05); /* 增加微妙的陰影，使其看起來更立體 */
         }
         .last-item .timeline-line { display: none; }
         .hide-scrollbar::-webkit-scrollbar { display: none; }
@@ -144,7 +133,7 @@
                 location: "京都東山",
                 weather: { temp: "10°~4°", icon: "cloud", desc: "即時預報: 多雲 (Cloudy)" },
                 activities: [
-                    { time: "05:00", type: "transport", name: "出門", desc: "計程車前往五重塔", duration: "", icon: "taxi", cost: "N/A", details: "06:48日出", link: "http://googleusercontent.com/maps.google.com/6-1" },
+                    { time: "05:00", type: "transport", name: "出門", desc: "計程車前往五重塔", duration: "", icon: "taxi", cost: "N/A", details: "06:48日出", link: "https://www.google.com/maps-1-1" },
                     { time: "06:00", type: "spot", name: "清水寺 仁王門", desc: "仁王門 (06:00開)", duration: "40分", icon: "gopuram", cost: "￥500", hours: "06:00~18:00", details: "京都清水寺1日行程-參觀重點..." },
                     { time: "07:10", type: "spot", name: "八坂神社", desc: "速拍", duration: "20分", icon: "torii-gate", cost: "N/A", hours: "24hr", details: "" },
                     { time: "09:45", type: "spot", name: "南禪寺", desc: "水路閣", duration: "60分", icon: "archway", cost: "￥1600", hours: "08:40~17:00", details: "三門+方丈+南禪院" },
@@ -161,7 +150,7 @@
                 location: "京都山科-宇治",
                 weather: { temp: "9°~1°", icon: "cloud", desc: "即時預報: 多雲 (Cloudy)" },
                 activities: [
-                    { time: "06:50", type: "transport", name: "出門", desc: "前往山科", duration: "", icon: "person-walking", cost: "N/A", details: "", link: "http://googleusercontent.com/maps.google.com/7-1" },
+                    { time: "06:50", type: "transport", name: "出門", desc: "前往山科", duration: "", icon: "person-walking", cost: "N/A", details: "", link: "https://www.google.com/maps-2-1" },
                     { time: "08:35", type: "spot", name: "毘沙門堂", desc: "勅使坂紅葉", duration: "45分", icon: "leaf", cost: "￥700", hours: "N/A", details: "" },
                     { time: "10:00", type: "spot", name: "醍醐寺", desc: "世界遺產", duration: "90分", icon: "gopuram", cost: "￥1500", hours: "09:00~17:00", details: "" },
                     { time: "12:30", type: "food", name: "宇治 Food Park", desc: "黑毛和牛", duration: "40分", icon: "utensils", cost: "N/A", hours: "N/A", details: "" },
@@ -177,14 +166,14 @@
                 location: "京都下京-奈良",
                 weather: { temp: "12°~2°", icon: "sun", desc: "即時預報: 多數晴朗 (Mostly Sunny)" },
                 activities: [
-                    { time: "06:30", type: "transport", name: "出門", desc: "前往東福寺", duration: "", icon: "person-walking", cost: "N/A", details: "", link: "http://googleusercontent.com/maps.google.com/8-1" },
+                    { time: "06:30", type: "transport", name: "出門", desc: "前往東福寺", duration: "", icon: "person-walking", cost: "N/A", details: "", link: "https://www.google.com/maps-3-1" },
                     { time: "08:00", type: "spot", name: "通天橋 & 東福寺", desc: "賞楓第一名", duration: "70分", icon: "leaf", cost: "￥1000", hours: "09:00~16:00", details: "" },
-                    { time: "10:10", type: "transport", name: "近鐵奈良站", desc: "抵達奈良", duration: "", icon: "train", cost: "N/A", details: "", link: "http://googleusercontent.com/maps.google.com/8-2" },
+                    { time: "10:10", type: "transport", name: "近鐵奈良站", desc: "抵達奈良", duration: "", icon: "train", cost: "N/A", details: "", link: "https://www.google.com/maps-3-2" },
                     { time: "11:35", type: "spot", name: "春日大社", desc: "鹿比較溫和", duration: "40分", icon: "torii-gate", cost: "￥700", hours: "09:00~16:00", details: "" },
                     { time: "12:20", type: "food", name: "水谷茶屋", desc: "注意營業時間", duration: "30分", icon: "utensils", cost: "N/A", hours: "N/A", details: "" },
                     { time: "13:35", type: "spot", name: "東大寺", desc: "大佛殿、南大門", duration: "30分", icon: "gopuram", cost: "￥800", hours: "07:30~17:30", details: "" },
                     { time: "16:40", type: "spot", name: "若草山頂", desc: "眺望市區", duration: "40分", icon: "mountain", cost: "N/A", hours: "N/A", details: "" },
-                    { time: "19:00", type: "transport", name: "回京都", desc: "近鐵特急", duration: "60分", icon: "train", cost: "N/A", details: "", link: "http://googleusercontent.com/maps.google.com/8-3" }
+                    { time: "19:00", type: "transport", name: "回京都", desc: "近鐵特急", duration: "60分", icon: "train", cost: "N/A", details: "", link: "https://www.google.com/maps-3-3" }
                 ]
             },
             {
@@ -193,7 +182,7 @@
                 location: "京都 洛中 (上京)",
                 weather: { temp: "14°~5°", icon: "cloud", desc: "即時預報: 多雲 (Cloudy)" },
                 activities: [
-                    { time: "07:30", type: "transport", name: "出門", desc: "前往京都御苑", duration: "", icon: "person-walking", cost: "N/A", details: "", link: "http://googleusercontent.com/maps.google.com/9-1" },
+                    { time: "07:30", type: "transport", name: "出門", desc: "前往京都御苑", duration: "", icon: "person-walking", cost: "N/A", details: "", link: "https://maps.app.goo.gl/example-temple-route-1-1" },
                     { time: "08:00", type: "spot", name: "京都御苑", desc: "佔地廣大", duration: "150分", icon: "tree", cost: "N/A", hours: "N/A", details: "" },
                     { time: "11:05", type: "spot", name: "相國寺", desc: "歷史古剎", duration: "25分", icon: "gopuram", cost: "N/A", hours: "N/A", details: "" },
                     { time: "12:10", type: "spot", name: "妙覺寺 & 妙顯寺", desc: "周邊散步", duration: "60分", icon: "location-dot", cost: "N/A", hours: "N/A", details: "" },
@@ -253,6 +242,7 @@
         const ActivityItem = ({ item, isLast }) => {
             
             const isConnector = item.type === 'transport' || item.type === 'arrival';
+            const BG_COLOR = '#fcfaf0'; // 全局背景色，用於點的中心
 
             // 獲取顏色類別
             const getColor = (type) => {
@@ -267,31 +257,48 @@
                 }
             };
             
-            const dotColor = (item.type === 'spot' || item.type === 'food') ? 'border-red-700' : 'border-amber-700'; 
+            // 節點邊框顏色：POI/Food 使用楓葉紅，Transport 使用木棕色
+            const dotColor = (item.type === 'spot' || item.type === 'food' || item.type === 'hotel') ? 'border-red-700' : 'border-amber-700'; 
             
             const containerClasses = `relative pl-16 py-3 pr-4 ${isLast ? 'last-item' : ''}`;
             
             // 使用暖米色作為卡片背景
             let cardClasses = "bg-yellow-50 rounded-lg p-3 border border-amber-200 relative shadow-sm hover:shadow-md transition-shadow";
-            const BG_COLOR = '#fcfaf0'; // 全局背景色，用於點的中心
 
-            // --- 交通連結器 (Transportation Connector) 樣式 ---
+            // --- 節點渲染邏輯 (優化後) ---
+            const dotSizeClass = 'w-4 h-4'; // 16px
+            // left-[17px] 用來將 16px 的點中心對齊 3px 線條 (left: 24px)
+            const dotPositionClass = 'left-[17px] top-[1rem]'; 
+            
+            const TimelineDot = (
+                <div 
+                    className={`absolute ${dotPositionClass} ${dotSizeClass} rounded-full z-10 flex items-center justify-center`} 
+                    style={{ backgroundColor: BG_COLOR, border: `3px solid ${dotColor.replace('border-', 'var(--tw-border-opacity, 1) #')}` }}
+                >
+                    {/* 主要停留點 (POI, Food, Hotel) 加上精緻紅點印記 */}
+                    {(item.type === 'spot' || item.type === 'food' || item.type === 'hotel') && (
+                        <i className="fas fa-circle text-red-700 text-[6px]"></i>
+                    )}
+                </div>
+            );
+
+            // --- 交通連接器 (Transportation Connector) 樣式 ---
             if (isConnector) {
                 // 交通連接器：使用更深的米色/淺木紋色
                 cardClasses = `bg-yellow-100 rounded-lg p-3 border border-dashed border-amber-300 relative shadow-sm hover:shadow-md transition-shadow`;
 
                 return (
                     <div className={containerClasses}>
-                        {/* Timeline Line (CSS 定義為竹棕色) */}
+                        {/* Timeline Line (竹棕色加粗) */}
                         <div className="timeline-line"></div>
                         
-                        {/* Time Bubble */}
+                        {/* Time Bubble (位置微調) */}
                         <div className="absolute left-0 top-4 w-12 text-right">
                             <span className="text-sm font-bold text-gray-700">{item.time}</span>
                         </div>
 
-                        {/* Dot (點綴金色/楓葉紅) */}
-                        <div className={`absolute left-[19px] top-[1.15rem] w-3 h-3 rounded-full border-2 z-10 ${dotColor}`} style={{ backgroundColor: BG_COLOR }}></div>
+                        {/* 節點 */}
+                        {TimelineDot}
 
                         {/* 交通卡片 */}
                         <div className={cardClasses}>
@@ -341,7 +348,7 @@
             // --- 景點/動作卡片 (POI/Action) 樣式 ---
             return (
                 <div className={containerClasses}>
-                    {/* Timeline Line (CSS 定義為竹棕色) */}
+                    {/* Timeline Line (竹棕色加粗) */}
                     <div className="timeline-line"></div>
                     
                     {/* Time Bubble */}
@@ -349,8 +356,8 @@
                         <span className="text-sm font-bold text-gray-700">{item.time}</span>
                     </div>
 
-                    {/* Dot (點綴金色/楓葉紅) */}
-                    <div className={`absolute left-[19px] top-[1.15rem] w-3 h-3 rounded-full border-2 z-10 ${dotColor}`} style={{ backgroundColor: BG_COLOR }}></div>
+                    {/* 節點 */}
+                    {TimelineDot}
 
                     {/* 景點/動作卡片 */}
                     <div className={cardClasses}>
@@ -495,4 +502,3 @@
     </script>
 </body>
 </html>
-```
